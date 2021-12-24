@@ -1,0 +1,16 @@
+{
+  "name": "TacSimElectronFiddle-main3　2021 12 01",
+  "productName": "TacSimElectronFiddle-main3　2021 12 01",
+  "description": "My Electron application description",
+  "keywords": [],
+  "main": "./main.js",
+  "version": "1.0.0",
+  "author": "sadanaga",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "13.1.7"
+  }
+}
