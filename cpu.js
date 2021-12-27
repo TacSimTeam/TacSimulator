@@ -473,7 +473,7 @@ class cpu{
         }
 
         setFlag(val){
-            this.flag = val;
+            this.flag = val & 0xff;
         }
 
         getFlag(){
