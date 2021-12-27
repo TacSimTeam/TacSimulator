@@ -27,5 +27,13 @@ cons.onclick = (e) => {
   }
 }
 
-var con = new Console(ctx);
+// cosole.log の無効化
+window.console = {};
+window.console.log = function(i){return;};
+
+// オブジェクトを作成
+const mem = new memory();
+const cpu1 = new cpu(mem.mem);
+const con = new Console(ctx, cpu1, mem);
+cpu1.reset();
 
