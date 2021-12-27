@@ -10,7 +10,7 @@ class io{
         this.sd.reset();
         this.timer.reset();
     }
-    
+
     input(ea){
         switch(ea){
             case 0x00:

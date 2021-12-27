@@ -12,7 +12,7 @@ class sio{
         this.stat=0x80;
         this.data=0;
     }
-    
+
     ctrl(e){
         if(e.key === 'Control'){
             this.ctrlf =0;
@@ -28,13 +28,13 @@ class sio{
         }
         if(e.key ==='Control'){
             this.ctrlf=1;
-        }   
+        }
         if(e.key.length === 1){
             const cp=e.key.codePointAt(0);
             if((0x20 <= cp)  && (cp <= 0x7e)){
                 this.data=cp;
                 this.stat=0xc0;
-            }  
+            }
             if(this.ctrlf === 1 && this.shiftf !==1){
                 if(0x40 <= this.data&& this.data <= 0x5f){
                     this.data = this.data-0x40;

@@ -9,7 +9,7 @@ function view(buf){              //ファイル内容確認用
         str += " ";
     }
   }
-  
+
   document.getElementById("aaa").innerText = str;
 }
 
@@ -31,7 +31,7 @@ class sd{
         this.secaddrH=0x0000;
         this.secaddrL=0x0000;
     }
-    
+
     readmem(){
         return this.memaddr;
     }
@@ -46,7 +46,7 @@ class sd{
         this.ctrl=data;
         let secaddr=this.Secaddr();
         if((this.ctrl & 0x02) !==0 ){
-            console.log("read");  
+            console.log("read");
             this.readFile(this.memaddr*2,secaddr);
             this.Ebit();
         }else if((this.ctrl & 0x01) !==0 ){
@@ -93,7 +93,7 @@ class sd{
         }
         console.log(this.mem);
     }
-    
+
     writeFile(md,sec){
         let data= new Uint8Array(512);
         for(let i=0;i<256;i=i+2){

@@ -11,7 +11,7 @@ class interrupt{
         this.flag = this.flag | (1<<num);
         console.log(this.flag);
     }
-    
+
     testFlag(){
         if(this.flag !== 0){
             for(let i=15;i>=0;i--){
@@ -23,4 +23,4 @@ class interrupt{
         }
         return -1;
     }
-}    
+}

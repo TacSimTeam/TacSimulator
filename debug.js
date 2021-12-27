@@ -1,5 +1,5 @@
 'use strict'
-{    
+{
     console.log("do")
     //textarea2 = sio
     const textarea2=document.getElementById("textarea2");
@@ -11,12 +11,12 @@
     textarea2.onkeyup = event =>{
         cpu1.io.sio.ctrl(event);
     };
-    
+
     let mem1 = new memory();
-    let cpu1 = new cpu(mem1.mem); 
+    let cpu1 = new cpu(mem1.mem);
     cpu1.reset();
-    
-    //以下よりdisp()までconsole関係    
+
+    //以下よりdisp()までconsole関係
     let ma = 0;
     let md = mem1.mem[ma];
     let MA = document.getElementById("MA");
@@ -32,12 +32,12 @@
         }
     G[12] = document.getElementById("FP");
     G[13] = document.getElementById("SP");
-    
+
     // 整数から16進文字列に変換する関数
     function toBinStr(val) {
         return ('0000'+val.toString(16).toUpperCase()).slice(-4);
     }
-    
+
     // コンソールに必要な準備
     function disp() {
         MA.value = toBinStr(ma);
@@ -48,8 +48,8 @@
         }
         FLAG.value = toBinStr(cpu1.flag);
         PC.value = toBinStr(cpu1.pc);
-    }   
- 
+    }
+
     function instraction(inst){
         let len = inst.length;
         let data =0;
@@ -60,15 +60,15 @@
             data = parseInt(inst[j],16);
             if(data >=0x0000){
                 if(inst[j].length === 4){           //１命令１６ビット時
-                    //mem1.mem[ma/2] = data;   
-                    mem1.write(data,ma);       
+                    //mem1.mem[ma/2] = data;
+                    mem1.write(data,ma);
                 }/*else if(inst[j].length === 2){       //８ビット時
                     mem1.mem[ma/2] = data << 8 + parseInt(inst[j+1],16);
                     j++;
                     } */
-                ma = ma+2;        
+                ma = ma+2;
             }
-        }    
+        }
     }
 
     class con{
@@ -93,19 +93,19 @@
     let cpuid,conid;
 
     /*function exec(){
-        return new Promise((resolve)=>{    
+        return new Promise((resolve)=>{
             if(con1.CPU()){
                 cpuid = setTimeout(() =>{
                     cpu1.exec(con1);
                     resolve();
                 },0);
             }else{
-                clearTimeout(cpuid);  
-            }            
+                clearTimeout(cpuid);
+            }
         });
     }*/
 
-    function run(){      
+    function run(){
         let start = new Date();     //開始時刻
         while(con1.CPU()){
             cpu1.exec(con1);
@@ -118,17 +118,17 @@
         cpuid = setTimeout(run,0);
         disp();
     }
-        
+
      /*function run(){      //非同期的処理(再帰)
         if(con1.CPU()){
             //cpuid = setInterval(function(){cpu1.exec(con1,cpuid)},0);  //setInterval使用時
             cpu1.exec(con1);        //setTimeout使用時
-            cpuid = setTimeout(run,0);  
+            cpuid = setTimeout(run,0);
         }else{
-            clearTimeout(cpuid);           
+            clearTimeout(cpuid);
         }
     }*/
-    
+
     con1.reset();
     disp();
 
@@ -186,7 +186,7 @@
     document.getElementById("writep").onclick = function() {
         ma=0;
         let pl = document.getElementById("textarea").value;
-        let word=pl.split(/\n/); 
+        let word=pl.split(/\n/);
         let inst;
         for(let i=0;i<word.length;i++){
             inst=word[i].split(/\s/,3);
@@ -216,7 +216,7 @@
         n=n+4;
         console.log("writef");
     }
-    
+
     document.getElementById("run").onclick = function(){
         cpu1.mem = mem1.mem;
         run();
