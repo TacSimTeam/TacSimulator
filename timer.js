@@ -5,6 +5,7 @@ class timer{
         this.register=Array(2);
         this.ctrl=Array(2);
         this.interrupt = interrupt;
+        this.id;
     }
 
     reset(){
@@ -32,20 +33,21 @@ class timer{
     writeCtrl(timer,data){
         this.ctrl[timer]=data;
         this.cnt[timer]=0;
-        if((this.ctrl[timer] & 0x0001)!==0){
-            let id=setInterval(this.time(timer,id),1);
+        if((this.ctrl[timer] & 1)!==0){
+            let t=this;     //setIntervalの引数にthisを使うとエラーになるので名前を変更
+            this.id=setInterval(function(){t.time(timer)},1);
         }
         if((this.ctrl[timer] & 0x8000)!==0){
             console.log("interrupt");
-            this.interrupt.setFlag(timer)//割り込み処理
+            this.interrupt.setFlag(9-timer) //割り込み番号　8:timer1 ,9:timer0
         }
     }
 
-    time(timer,id){
+    time(timer){
         if(this.cnt[timer] === this.ctrl[timer]){
             this.flag[timer]=0x8000;
             this.cnt[timer]=0;
-            clearInterval(id);
+            clearInterval(this.id);
         }else{
             this.cnt[timer]++;
         }

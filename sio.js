@@ -42,7 +42,7 @@ class sio{
                     this.data = this.data-0x60;
                 }
             }
-            this.interrupt.setFlag(4);
+            this.interrupt.setFlag(5);
         }else{
             switch(e.key){
                 case 'Escape':
@@ -65,16 +65,16 @@ class sio{
             }
             if(this.data !== 0){
                 this.stat=0xc0;
-                this.interrupt.setFlag(4);
+                this.interrupt.setFlag(5);
             }
         }
         console.log(this.data);
     }
 
     output(data){
-        textarea2.value+=String.fromCodePoint(data); //文字列に変換
         console.log(data);
-        this.interrupt.setFlag(5);
+        textarea2.value+=String.fromCodePoint(data); //文字列に変換
+        this.interrupt.setFlag(4);
     }
 
     readData(){
@@ -83,6 +83,7 @@ class sio{
     }
 
     readStat(){
+        console.log('readStat');
         return this.stat;
     }
 }

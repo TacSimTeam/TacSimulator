@@ -1,18 +1,3 @@
-
-function view(buf){              //ファイル内容確認用
-  let str = "";
-  for (let c=0 ;c<256; c++) {
-    str += ("0"+buf[c].toString(16)).slice(-2);
-    if ((c+1)%16===0) {
-        str += "\n";
-    } else {
-        str += " ";
-    }
-  }
-  
-  document.getElementById("aaa").innerText = str;
-}
-
 class sd{
     constructor(mem,interrupt){
         this.stat=0x80;
@@ -31,7 +16,11 @@ class sd{
         this.secaddrH=0x0000;
         this.secaddrL=0x0000;
     }
-    
+
+    readStat(){
+        return this.stat;
+    }
+  
     readmem(){
         return this.memaddr;
     }
@@ -47,10 +36,10 @@ class sd{
         let secaddr=this.Secaddr();
         if((this.ctrl & 0x02) !==0 ){
             console.log("read");  
-            this.readFile(this.memaddr*2,secaddr);
+            this.readFile(this.memaddr,secaddr);
             this.Ebit();
         }else if((this.ctrl & 0x01) !==0 ){
-            this.writeFile(this.memaddr*2,secaddr);
+            this.writeFile(this.memaddr,secaddr);
             this.Ebit();
         }else if((this.ctrl & 0x04) !==0 ){
             this.Ebit();
@@ -59,19 +48,22 @@ class sd{
 
     writemem(addr){
         this.memaddr=addr;
+        console.log("memaddr:"+this.memaddr);
     }
 
     writeSecH(addr){
         this.secaddrH=addr;
+        console.log("SecH:"+this.secaddrH);
     }
 
     writeSecL(addr){
-       this.secaddrL=addr;
+        this.secaddrL=addr;
+        console.log("SecL:"+this.secaddrL);
     }
 
     Ebit(){
         if((this.ctrl & 0x80) !== 0){
-            this.interrupt.setFlag(8);//割り込みコントローラ通知
+            this.interrupt.setFlag(1);//割り込みコントローラ通知
             console.log("interrupt");
         }
     }
@@ -85,20 +77,20 @@ class sd{
     readFile(md,sec){
         console.log(md,sec);
         let buf = new Uint8Array(window.electron.readSector(sec));
-        view(buf);
         console.log(buf);
         for(let i=0;i<512;i=i+2){
-            this.mem[md/2]=(buf[i]<<8)+buf[i+1];
+            let val = (buf[i]<<8)+buf[i+1];
+            this.mem.write(val,md);
             md=md+2;
         }
-        console.log(this.mem);
+        console.log(this.mem.mem);
     }
-    
+     
     writeFile(md,sec){
         let data= new Uint8Array(512);
         for(let i=0;i<256;i=i+2){
-            data[i]=(this.mem[md/2] & 0xff00) >> 8;
-            data[i+1] = this.mem[md/2] & 0x00ff;
+            data[i]=(this.mem.read(md) & 0xff00) >> 8;
+            data[i+1] = this.mem.read(md) & 0x00ff;
             md=md+2;
         }
         window.electron.writeSector(data,sec);
