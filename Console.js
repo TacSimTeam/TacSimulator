@@ -116,7 +116,7 @@ class Console{
     this.switches.push(new Switch(this.ctx,"D"+i,x,250));
    }
 
-   // BREK スイッチと STEP スイッチ
+   // BREAK スイッチと STEP スイッチ
    this.stepSw = new Switch(this.ctx,"STEP",100,330);
    this.switches.push(this.stepSw);
    this.breakSw = new Switch(this.ctx,"BREAK",60,330);
@@ -193,10 +193,10 @@ class Console{
 
   // cpu の命令実行関係
   // 命令の連続実行
-  run() {
+  run(b) {
     let start = new Date();                    // 開始時刻
     while (this.runFF==1) {
-      this.cpu.exec(this);
+      this.cpu.exec(this,b,this.addr);
       let stop = new Date();                   // 現在時刻
       if (stop.getTime()-start.getTime()>10){  // 10ms以上実行した
         this.cpuid = setTimeout(()=>{this.run();},0);
@@ -217,13 +217,15 @@ class Console{
     if (this.runFF==1) return;
     this.runFF = 1;
     this.runLed.set(this.runFF);
-    if (this.stepSw.getVal()==0) {             // 通常実行
-      this.run();
-    } else {                                   // STEP実行
-      this.cpu.exec(this);                     // 1命令実行
+    if (this.stepSw.getVal()==1) {
+      this.cpu.exec(this,0,0);                     // 1命令実行
       this.runFF = 0;
-      this.runLed.set(this.runFF);
-      this.drawAddressDataLeds();
+      this.runLed.set(this.runFF);          // STEP実行
+      this.drawAddressDataLeds();           // 通常実行
+    }if(this.breakSw.getVal()==1){
+      this.run(1);
+    }else{
+      this.run(0);
     }
   };
 
