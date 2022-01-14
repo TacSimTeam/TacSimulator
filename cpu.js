@@ -30,6 +30,7 @@ class cpu{
             this.register.setPrivMode(true);
             this.io.reset();
             this.interrupt.reset();
+            this.mem.iplload();
         }
         // アドレスを正規化する
         normAddr(val) {

@@ -33,7 +33,7 @@ window.console.log = function(i){return;};
 
 // オブジェクトを作成
 const mem = new memory();
-const cpu1 = new cpu(mem.mem);
+const cpu1 = new cpu(mem);
 const con = new Console(ctx, cpu1, mem);
 cpu1.reset();
 

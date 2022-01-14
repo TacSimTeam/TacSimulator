@@ -18,7 +18,7 @@ const filenames = fs.readdirSync(path);
 console.log(filenames);
 const buf = Buffer.alloc(512);
 try {
-  var fd = fs.openSync("/Users/i17hayata/sotuken/TacSim/TacSim/TacOS/kernel.bin", "r+");
+  var fd = fs.openSync("/Users/i17hayata/sotuken/TacSim/TacSim/TacOS.dmg", "r+");
   console.log("ファイル:"+fd);
 } catch(e) {
   console.log(e.message);
