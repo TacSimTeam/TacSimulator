@@ -3,6 +3,7 @@ class io{
         this.sio=new sio(interrupt);
         this.sd=new sd(mem,interrupt);
         this.timer = new timer(interrupt);
+        this.mem = mem;
     }
 
     reset(){
@@ -12,6 +13,7 @@ class io{
     }
 
     input(ea){
+        console.log(ea);
         switch(ea){
             case 0x00:
                 return this.timer.readCnt(0);
@@ -33,6 +35,8 @@ class io{
                 return this.sd.readSecH();
             case 0x16:
                 return this.sd.readSecL();
+            case 0x1e:
+                return 1;
         }
     }
 
@@ -64,6 +68,9 @@ class io{
                 break;
             case 0x16:
                 this.sd.writeSecL(data);
+                break;
+            case 0xf0:
+                this.mem.iplbanc(data);
                 break;
         }
     }

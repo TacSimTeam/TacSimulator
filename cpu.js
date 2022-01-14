@@ -18,14 +18,16 @@ class cpu{
             this.op3= 0; //opの下位3bit
             this.op5 = 0; //opの上位5bit
             this.excp = false;
-            this.mem =mem;
+            this.mem = mem;
+            this.shflag = false;
         }
 
             // CPUを初期化する関数
         reset() {
             this.register.reset();
-            this.pc = 0;
+            this.pc = 0xe000;
             this.flag = flagP;
+            this.register.setPrivMode(true);
             this.io.reset();
             this.interrupt.reset();
         }
@@ -40,8 +42,10 @@ class cpu{
         }
 
         sigExt4(v){
-            if((v & 8) != 0){
-                v = ~7 | v;
+            if(!this.shflag){
+                if((v & 8) != 0){
+                    v = ~7 | v;
+                }
             }
             return v;
         }
@@ -51,17 +55,18 @@ class cpu{
             switch(this.op3){
             case 0:
                 this.pc = this.normAddr(this.pc+2);
-                return this.normAddr(this.mem[val/2]);
+                return this.normAddr(this.mem.read(val));
             case 1:
                 this.pc = this.normAddr(this.pc+2);
-                return this.normAddr(this.mem[val/2] + this.register.read(rx));
+                return this.normAddr(this.mem.read(val) + this.register.read(rx));
             case 2:
                 this.pc = this.normAddr(this.pc+2);
                 return this.normAddr(val);
             case 3:
                 let c = this.sigExt4(rx);
                 return this.normAddr(c*2 + this.register.read(12));
-            case 6,7:
+            case 6:
+            case 7:
                 return this.register.read(rx);
             default:
                 return null;
@@ -77,12 +82,16 @@ class cpu{
                 let c = this.sigExt4(rx);
                 return this.normInt(c);
             case 7:
-                let word = this.mem[ea/2];
+                let word = this.mem.read(ea);
                 if((ea & 1) == 0){
+                    console.log(word >>> 8);
                     return word >>> 8;
-                }else return word & 0xff;
+                }else {
+                    console.log(word & 0xff);
+                    return word & 0xff;
+                }
             default:
-                return this.mem[ea/2];
+                return this.mem.read(ea);
             }
         }
 
@@ -121,13 +130,14 @@ class cpu{
             let ea = this.EA(rx);
             let word = this.register.read(rd);
             if(this.op3 == 7){
-                if((ea & 1) == 0){
-                    word = (this.mem[ea/2] & 0xff00) | (word & 0x00ff);
+                if((ea & 1) ==1){
+                    word = (this.mem.read(ea) & 0xff00) | (word & 0x00ff);
                 }else{
-                    word = (this.mem[ea/2] & 0x00ff) | ((word << 8) & 0xff00);
+                    word = (this.mem.read(ea) & 0x00ff) | ((word << 8) & 0xff00);
                 }
             }
-            this.mem[ea/2] = word;
+            this.mem.write(word,ea);
+            console.log(word,ea);
         }
 
         cal = (rd,rx,f) =>{
@@ -217,16 +227,16 @@ class cpu{
 
         pushVal(v){
             this.register.write(13,this.normAddr(this.register.read(13) - 2));
-            this.mem[this.register.read(13)/2] = v;
+            this.mem.write(v,this.register.read(13));
         }
 
         popVal(){
-            const v = this.mem[this.register.read(13)/2];
+            const v = this.mem.read(this.register.read(13));
             this.register.write(13,this.normAddr(this.register.read(13) + 2));
             return v;
         }
 
-        call(){
+        call(con){
             let ea = this.EA();
             this.pushVal(this.pc);
             this.pc = ea;
@@ -239,6 +249,7 @@ class cpu{
 
         out(rd,rx){
             let d=this.EA(rx);
+            console.log("入力データ:"+this.register.read(rd));
             let data=this.register.read(rd);
             this.io.output(data,d);
         }
@@ -262,7 +273,7 @@ class cpu{
                 this.flag = (0xf0 & this.flag) +(0x0f & this.popVal());    //特権モード以外
             }
             this.pc = this.popVal();
-            this.register.privMode((this.flag & flagP)!==0);
+            this.register.setPrivMode((this.flag & flagP)!==0);
         }
 
         svc(){
@@ -276,10 +287,10 @@ class cpu{
             this.register.setPrivMode(true);
             this.pushVal(this.pc);
             this.pushVal(flag);
-            this.pc = this.mem[(0xffe0 + num*2)/2];  //割り込みベクタ
+            this.pc = this.mem.read((0xffe0 + num*2));  //割り込みベクタ
         }
 
-        exec(con){
+        exec(con,breakmode,breakaddr){
             if((this.flag & flagE)!==0|| this.excp === true){  //割り込み判定
                 let num = this.interrupt.testFlag();    //割り込み番号
                 this.excp = false;
@@ -289,11 +300,17 @@ class cpu{
                     this.flag = this.flag | flagE;
                 }
             }
+            this.mem.setBreakAddr(breakaddr);
             this.exceInstruction(con);      //１命令実行
+            if(breakmode){
+                if(this.mem.getBreakFlag()){
+                    con.stop();
+                }
+            }
         }
 
         exceInstruction(con){
-            this.ir = this.mem[this.pc/2];
+            this.ir = this.mem.read(this.pc);
             this.pc = this.normAddr(this.pc+2);
             this.op = this.ir >>> 8;
             this.op5 = this.op >>> 3;
@@ -360,18 +377,11 @@ class cpu{
                 console.log('mod');
                 this.cal(rd,rx,(v1,v2) => {return v1 % v2});
                 break;
-            case 0x0d:
-                console.log('mull');
-                break;
-            case 0x0e:
-                console.log('divl');
-                break;
-            case 0x0f:
-                console.log('');
-                break;
            case 0x10:
                 console.log('shla');
+                this.shflag = true;
                 this.cal(rd,rx,(v1,v2) => {return v1 << v2});
+                this.shflag = false;
                 break;
             case 0x11:
                 console.log('shll');
@@ -394,7 +404,7 @@ class cpu{
                 break;
             case 0x15:
                 console.log('call');
-                this.call();
+                this.call(con);
                 break;
             case 0x16:
                 if((this.flag & flagP | flagI)!== 0){
