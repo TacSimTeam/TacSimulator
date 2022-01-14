@@ -11,7 +11,7 @@ class io{
         this.sd.reset();
         this.timer.reset();
     }
-    
+
     input(ea){
         console.log(ea);
         switch(ea){

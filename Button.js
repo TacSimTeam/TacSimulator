@@ -20,7 +20,7 @@ class  Button{
     this.ctx.fill();
     this.ctx.fillStyle = "#000080";
     this.ctx.font = "10px serif";
-    this.ctx.fillText(this.text, this.x+12, this.y+38);   
+    this.ctx.fillText(this.text, this.x+12, this.y+38);
   }
 
   //hit関数

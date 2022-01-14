@@ -31,7 +31,7 @@ class Switch {
       this.ctx.rect(this.x+9,this.y+30, 8, 8);
       this.ctx.fillStyle = "#993300";
       this.ctx.fill();
-      
+
     } else {
       this.ctx.rect(this.x+9,this.y+12, 8, -20);
       this.ctx.fillStyle = "#cccccc";

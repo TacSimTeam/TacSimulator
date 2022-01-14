@@ -6,7 +6,7 @@ const flagC=0x04;
 const flagS=0x02;
 const flagZ=0x01;
 class cpu{
-        constructor(mem){         
+        constructor(mem){
             this.register = new register();
             this.interrupt =new interrupt();
             this.io=new io(mem,this.interrupt);
@@ -31,7 +31,7 @@ class cpu{
             this.io.reset();
             this.interrupt.reset();
         }
-        // アドレスを正規化する 
+        // アドレスを正規化する
         normAddr(val) {
             return val & 0xfffe;
         }
@@ -49,7 +49,7 @@ class cpu{
             }
             return v;
         }
-    
+
         EA(rx){
             let val = this.normAddr(this.pc);
             switch(this.op3){
@@ -72,7 +72,7 @@ class cpu{
                 return null;
             }
         }
-    
+
         fetchData(rx){
             let ea = this.EA(rx);
             switch(this.op3){
@@ -94,13 +94,13 @@ class cpu{
                 return this.mem.read(ea);
             }
         }
-    
+
         calFlag(val,v1,v2){
             let valMsb = val & 0x8000;
             let v1Msb = v1 & 0x8000;
             let v2Msb = v2 & 0x8000;
             this.flag = this.flag & 0xfff0;
-            
+
             if(this.op5 == 3){ //add
                 if(v1Msb == v2Msb && valMsb != v1Msb){
                     this.flag |= flagV;
@@ -120,12 +120,12 @@ class cpu{
                 this.flag |= flagZ;
             }
        }
-    
+
         ld(rd,rx){
             let d = this.fetchData(rx);
             this.register.write(rd,d);
         }
-    
+
         st(rd,rx){
             let ea = this.EA(rx);
             let word = this.register.read(rd);
@@ -139,7 +139,7 @@ class cpu{
             this.mem.write(word,ea);
             console.log(word,ea);
         }
-        
+
         cal = (rd,rx,f) =>{
             let v1 = this.register.read(rd);
             let v2 = this.fetchData(rx);
@@ -149,7 +149,7 @@ class cpu{
                 this.register.write(rd,this.normInt(d));
             }
         }
-    
+
         jmpf(flag,d){ //jmpのflag判定
             if(flag){
                 this.pc=d;
@@ -157,7 +157,7 @@ class cpu{
         }
 
         jmp(rd){
-            let d = this.EA(); 
+            let d = this.EA();
             let zflag = ((this.flag & flagZ) !=0);
             let cflag = ((this.flag & flagC) !=0);
             let sflag = ((this.flag & flagS) !=0);
@@ -191,7 +191,7 @@ class cpu{
                 this.jmpf(zflag || (!sflag && vflag || sflag && !vflag),d);
                 console.log("jle");
                 break;
-            case 7: 
+            case 7:
                 this.jmpf((!sflag && vflag || sflag && !vflag),d);
                 console.log("jlt");
                 break;
@@ -224,7 +224,7 @@ class cpu{
                 console.log("jmp");
             }
         }
-        
+
         pushVal(v){
             this.register.write(13,this.normAddr(this.register.read(13) - 2));
             this.mem.write(v,this.register.read(13));
@@ -241,7 +241,7 @@ class cpu{
             this.pushVal(this.pc);
             this.pc = ea;
         }
-        
+
         in(rd,rx){
             let d=this.EA(rx);
             this.register.write(rd,this.io.input(d));
@@ -254,14 +254,14 @@ class cpu{
             this.io.output(data,d);
         }
 
-        push(rd){      
+        push(rd){
             this.pushVal(this.register.read(rd));
         }
-    
+
         pop(rd){
             this.register.write(rd,this.popVal());
         }
-    
+
         ret(){
             this.pc = this.popVal();
         }
@@ -298,7 +298,7 @@ class cpu{
                     console.log('割り込み番号:'+num);
                     this.interruph(num);
                     this.flag = this.flag | flagE;
-                }   
+                }
             }
             this.mem.setBreakAddr(breakaddr);
             this.exceInstruction(con);      //１命令実行
@@ -391,7 +391,7 @@ class cpu{
                 console.log('shra');
                 this.cal(rd,rx,(v1,v2) => {
                         if((v1 & 0x8000)!=0){
-                            v1 = v1 | ~0xffff; 
+                            v1 = v1 | ~0xffff;
                         }
                     return v1 >> v2});
                 break;
@@ -489,4 +489,4 @@ class cpu{
         getFlag(){
             return this.flag;
         }
-}    
+}

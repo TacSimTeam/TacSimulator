@@ -29,7 +29,7 @@ class timer{
     writeRegister(timer,data){
         this.register[timer]=data;
     }
-        
+
     writeCtrl(timer,data){
         this.ctrl[timer]=data;
         this.cnt[timer]=0;

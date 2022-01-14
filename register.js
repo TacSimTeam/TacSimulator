@@ -10,7 +10,7 @@ class register{
         this.sp.fill(0);
     }
 
-    setPrivMode(flag){       //CPUのreti(),interrupth()で呼び出し      
+    setPrivMode(flag){       //CPUのreti(),interrupth()で呼び出し
         this.privMode = flag;
     }
 
@@ -25,8 +25,8 @@ class register{
             case 14:
                 return this.sp[1];      //usp
             default :
-                return this.reg[no];       //G0~FP 
-        }    
+                return this.reg[no];       //G0~FP
+        }
     }
 
     write(no,val){
@@ -42,7 +42,7 @@ class register{
                 this.sp[1]=val;      //usp
                 break;
             default :
-                this.reg[no]=val;       //G0~FP 
-        }    
+                this.reg[no]=val;       //G0~FP
+        }
     }
 }

@@ -20,15 +20,15 @@ class Console{
    ctx.lineTo(380,137);
    ctx.moveTo(380,137);
    ctx.lineTo(380,150);
-   
+
    ctx.moveTo(285,129);
    ctx.lineTo(410,129);
    ctx.moveTo(410,129);
    ctx.lineTo(410,150);
    ctx.strokeStyle = "#cccccc";
-   ctx.stroke();    
+   ctx.stroke();
 
-   // アドレスLED 
+   // アドレスLED
    this.addrLeds = [];
    for (let i=0; i<8; i++) {
      let x = 370 - i * 40;
@@ -37,9 +37,9 @@ class Console{
      }
      this.addrLeds.push(
        new Led(this.ctx,"A"+i,x,30,"#400000","#ff0000"," "," "," "));
-   } 
-   
-   // データLED 
+   }
+
+   // データLED
    this.dataLeds = [];
    this.dataLeds.push(
      new Led(this.ctx,"D0",370,90,"#004000","#00ff00","(Z)"," "," "));
@@ -116,7 +116,7 @@ class Console{
     this.switches.push(new Switch(this.ctx,"D"+i,x,250));
    }
 
-   // BREK スイッチと STEP スイッチ
+   // BREAK スイッチと STEP スイッチ
    this.stepSw = new Switch(this.ctx,"STEP",100,330);
    this.switches.push(this.stepSw);
    this.breakSw = new Switch(this.ctx,"BREAK",60,330);
@@ -152,7 +152,7 @@ class Console{
       val = this.readAndShift(val);
       this.mem.write(val,this.addr);
       this.drawAddressDataLeds();
-    } 
+    }
   }
 
   // DECA ボタンが押された
@@ -193,10 +193,10 @@ class Console{
 
   // cpu の命令実行関係
   // 命令の連続実行
-  run() {
+  run(b) {
     let start = new Date();                    // 開始時刻
     while (this.runFF==1) {
-      this.cpu.exec(this);
+      this.cpu.exec(this,b,this.addr);
       let stop = new Date();                   // 現在時刻
       if (stop.getTime()-start.getTime()>10){  // 10ms以上実行した
         this.cpuid = setTimeout(()=>{this.run();},0);
@@ -217,13 +217,15 @@ class Console{
     if (this.runFF==1) return;
     this.runFF = 1;
     this.runLed.set(this.runFF);
-    if (this.stepSw.getVal()==0) {             // 通常実行
-      this.run();
-    } else {                                   // STEP実行
-      this.cpu.exec(this);                     // 1命令実行
+    if (this.stepSw.getVal()==1) {
+      this.cpu.exec(this,0,0);                     // 1命令実行
       this.runFF = 0;
-      this.runLed.set(this.runFF);
-      this.drawAddressDataLeds();
+      this.runLed.set(this.runFF);          // STEP実行
+      this.drawAddressDataLeds();           // 通常実行
+    }if(this.breakSw.getVal()==1){
+      this.run(1);
+    }else{
+      this.run(0);
     }
   };
 
@@ -299,7 +301,7 @@ class Console{
       this.drawAddressDataLeds();
     }
   }
-  
+
   // 左矢印ボタンが押された
   countDown(){
     if (this.runFF==1) return;
@@ -315,11 +317,11 @@ class Console{
 //クリック時の動作
 cons.onclick = (e) => {
   //message.value=e.offsetX;
-  //message2.value=e.offsetY;   
-  
+  //message2.value=e.offsetY;
+
   //ボタン
   for(let i=0; i<9; i++) {
-    if (con.button[i].hit(e.offsetX,e.offsetY)){       
+    if (con.button[i].hit(e.offsetX,e.offsetY)){
       document.getElementById("sound").play();
     }
   }

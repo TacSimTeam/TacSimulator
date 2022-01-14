@@ -9,11 +9,11 @@ const sound2 = document.getElementById("sound2");//https://soundeffect-lab.info/
 //クリック時の動作
 cons.onclick = (e) => {
   //message.value=e.offsetX;
-  //message2.value=e.offsetY;   
-  
+  //message2.value=e.offsetY;
+
   //ボタン
   for(let i=0; i<9; i++) {
-    if (con.button[i].hit(e.offsetX,e.offsetY)){       
+    if (con.button[i].hit(e.offsetX,e.offsetY)){
       document.getElementById("sound").play();
     }
   }
@@ -23,7 +23,7 @@ cons.onclick = (e) => {
     if (con.switches[i].hit(e.offsetX,e.offsetY,i)){
       document.getElementById("sound2").play();
     }
-    
+
   }
 }
 

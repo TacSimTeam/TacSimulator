@@ -85,7 +85,7 @@ class sd{
         }
         console.log(this.mem.mem);
     }
-     
+
     writeFile(md,sec){
         let data= new Uint8Array(512);
         for(let i=0;i<256;i=i+2){
