@@ -34,7 +34,7 @@ class timer{
         this.ctrl[timer]=data;
         this.cnt[timer]=0;
         if((this.ctrl[timer] & 1)!==0){
-            let t=this;     //setIntervalの引数にthisを使うとエラーになるので名前を変更
+            let t=this;
             this.id=setInterval(function(){t.time(timer)},1);
         }
         if((this.ctrl[timer] & 0x8000)!==0){
