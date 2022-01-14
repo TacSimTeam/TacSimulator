@@ -6,10 +6,10 @@ const flagC=0x04;
 const flagS=0x02;
 const flagZ=0x01;
 class cpu{
-        constructor(tmem){         
+        constructor(mem){         
             this.register = new register();
             this.interrupt =new interrupt();
-            this.io=new io(tmem,this.interrupt);
+            this.io=new io(mem,this.interrupt);
             this.pc = 0;
             this.flag = flagP;
             this.ir = 0;
@@ -18,7 +18,7 @@ class cpu{
             this.op3= 0; //opの下位3bit
             this.op5 = 0; //opの上位5bit
             this.excp = false;
-            this.mem =tmem.mem;
+            this.mem = mem;
             this.shflag = false;
         }
 
@@ -55,10 +55,10 @@ class cpu{
             switch(this.op3){
             case 0:
                 this.pc = this.normAddr(this.pc+2);
-                return this.normAddr(this.mem[Math.floor(val/2)]);
+                return this.normAddr(this.mem.read(val));
             case 1:
                 this.pc = this.normAddr(this.pc+2);
-                return this.normAddr(this.mem[Math.floor(val/2)] + this.register.read(rx));
+                return this.normAddr(this.mem.read(val) + this.register.read(rx));
             case 2:
                 this.pc = this.normAddr(this.pc+2);
                 return this.normAddr(val);
@@ -82,8 +82,7 @@ class cpu{
                 let c = this.sigExt4(rx);
                 return this.normInt(c);
             case 7:
-                let word = this.mem[Math.floor(ea/2)];
-                console.log("G0,word,ea:"+this.register.read(0),word,ea);
+                let word = this.mem.read(ea);
                 if((ea & 1) == 0){
                     console.log(word >>> 8);
                     return word >>> 8;
@@ -92,7 +91,7 @@ class cpu{
                     return word & 0xff;
                 }
             default:
-                return this.mem[Math.floor(ea/2)];
+                return this.mem.read(ea);
             }
         }
     
@@ -131,13 +130,14 @@ class cpu{
             let ea = this.EA(rx);
             let word = this.register.read(rd);
             if(this.op3 == 7){
-                if((ea & 1) == 0){
-                    word = (this.mem[Math.floor(ea/2)] & 0xff00) | (word & 0x00ff);
+                if((ea & 1) ==1){
+                    word = (this.mem.read(ea) & 0xff00) | (word & 0x00ff);
                 }else{
-                    word = (this.mem[Math.floor(ea/2)] & 0x00ff) | ((word << 8) & 0xff00);
+                    word = (this.mem.read(ea) & 0x00ff) | ((word << 8) & 0xff00);
                 }
             }
-            this.mem[Math.floor(ea/2)] = word;
+            this.mem.write(word,ea);
+            console.log(word,ea);
         }
         
         cal = (rd,rx,f) =>{
@@ -147,7 +147,7 @@ class cpu{
             this.calFlag(d,v1,v2);
             if(this.op5 != 5){
                 this.register.write(rd,this.normInt(d));
-            }else console.log("cmp:"+v1,v2);
+            }
         }
     
         jmpf(flag,d){ //jmpのflag判定
@@ -227,11 +227,11 @@ class cpu{
         
         pushVal(v){
             this.register.write(13,this.normAddr(this.register.read(13) - 2));
-            this.mem[Math.floor(this.register.read(13)/2)] = v;
+            this.mem.write(v,this.register.read(13));
         }
 
         popVal(){
-            const v = this.mem[Math.floor(this.register.read(13)/2)];
+            const v = this.mem.read(this.register.read(13));
             this.register.write(13,this.normAddr(this.register.read(13) + 2));
             return v;
         }
@@ -240,9 +240,6 @@ class cpu{
             let ea = this.EA();
             this.pushVal(this.pc);
             this.pc = ea;
-            if(ea === 0xea6a){
-                con.stop();
-            }
         }
         
         in(rd,rx){
@@ -290,10 +287,10 @@ class cpu{
             this.register.setPrivMode(true);
             this.pushVal(this.pc);
             this.pushVal(flag);
-            this.pc = this.mem[Math.floor((0xffe0 + num*2)/2)];  //割り込みベクタ
+            this.pc = this.mem.read((0xffe0 + num*2));  //割り込みベクタ
         }
 
-        exec(con){
+        exec(con,breakmode,breakaddr){
             if((this.flag & flagE)!==0|| this.excp === true){  //割り込み判定
                 let num = this.interrupt.testFlag();    //割り込み番号
                 this.excp = false;
@@ -303,11 +300,17 @@ class cpu{
                     this.flag = this.flag | flagE;
                 }   
             }
+            this.mem.setBreakAddr(breakaddr);
             this.exceInstruction(con);      //１命令実行
+            if(breakmode){
+                if(this.mem.getBreakFlag()){
+                    con.stop();
+                }
+            }
         }
 
         exceInstruction(con){
-            this.ir = this.mem[Math.floor(this.pc/2)];
+            this.ir = this.mem.read(this.pc);
             this.pc = this.normAddr(this.pc+2);
             this.op = this.ir >>> 8;
             this.op5 = this.op >>> 3;
@@ -486,4 +489,4 @@ class cpu{
         getFlag(){
             return this.flag;
         }
-}
+}    
