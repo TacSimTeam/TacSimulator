@@ -18,7 +18,7 @@ const filenames = fs.readdirSync(path);
 console.log(filenames);
 const buf = Buffer.alloc(512);
 try {
-  var fd = fs.openSync("/Users/i17hayata/sotuken/TacSim/TacSim/TacOS.dmg", "r+");
+  var fd = fs.openSync("app/TacOS.dmg", "r+");
   console.log("ファイル:"+fd);
 } catch(e) {
   console.log(e.message);
@@ -35,8 +35,7 @@ contextBridge.exposeInMainWorld(
     writeSector: (data,n) => {
       try {
         fs.writeSync(fd,data,n*512);
-      }
-      catch(e){
+      } catch(e) {
         console.log(e.message);
       }
     }

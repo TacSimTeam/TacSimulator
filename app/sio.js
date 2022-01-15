@@ -11,6 +11,7 @@ class sio{
     reset(){
         this.stat=0x80;
         this.data=0;
+        textarea2.value="";
     }
 
     ctrl(e){
