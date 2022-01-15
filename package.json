@@ -1,13 +1,19 @@
 {
-  "name": "TacSimElectronFiddle-main3　2021 12 01",
-  "productName": "TacSimElectronFiddle-main3　2021 12 01",
-  "description": "My Electron application description",
+  "name": "TacSimurator",
+  "productName": "TacSimurator",
+  "description": "TaC Simurator",
   "keywords": [],
-  "main": "./main.js",
+  "main": "app/main.js",
   "version": "1.0.0",
   "author": "sadanaga",
   "scripts": {
     "start": "electron ."
+  },
+  "build": {
+    "files": [
+      "build/**/*",
+      "public/**/*"
+    ]
   },
   "dependencies": {},
   "devDependencies": {
