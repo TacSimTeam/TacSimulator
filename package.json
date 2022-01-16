@@ -1,22 +1,36 @@
 {
-  "name": "TacSimurator",
-  "productName": "TacSimurator",
-  "description": "TaC Simurator",
-  "keywords": [],
-  "main": "app/main.js",
+  "name": "tacsimulator",
   "version": "1.0.0",
-  "author": "sadanaga",
+  "description": "TaC Simulator",
+  "main": "app/main.js",
   "scripts": {
-    "start": "electron ."
+    "build": "electron-builder --dir",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TacSimTeam/TacSimulator.git"
+  },
+  "author": "sigemura@tokuyama.ac.jp",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TacSimTeam/TacSimulator/issues"
+  },
+  "homepage": "https://github.com/TacSimTeam/TacSimulator#readme",
   "build": {
+    "mac": {
+      "target": {
+        "target": "dir",
+        "arch": "universal"
+      }
+    },
     "files": [
       "build/**/*",
       "public/**/*"
     ]
   },
-  "dependencies": {},
   "devDependencies": {
-    "electron": "13.1.7"
+    "electron": "^16.0.7",
+    "electron-builder": "^22.10.4"
   }
 }

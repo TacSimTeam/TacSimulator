@@ -11,14 +11,16 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 })
 
+const path = require('path')
 const fs = require("fs");     //ファイル読み書きメソッド用
-const path = process.cwd();
-console.log(path);
-const filenames = fs.readdirSync(path);
-console.log(filenames);
+//const path = process.cwd();
+//console.log(path);
+//const filenames = fs.readdirSync(path);
+//console.log(filenames);
+console.log(__dirname);
 const buf = Buffer.alloc(512);
 try {
-  var fd = fs.openSync("app/TacOS.dmg", "r+");
+  var fd = fs.openSync(path.join(__dirname, "TacOS.dmg"), "r+");
   console.log("ファイル:"+fd);
 } catch(e) {
   console.log(e.message);
