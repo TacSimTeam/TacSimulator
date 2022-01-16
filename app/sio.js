@@ -74,7 +74,10 @@ class sio{
 
     output(data){
         console.log(data);
-        textarea2.value+=String.fromCodePoint(data); //文字列に変換
+        var inStr = String.fromCodePoint(data); //文字列に変換
+        const regex = /\r/;
+        inStr = inStr.replace(regex, "");  // CRを取り除く（LFだけ有効）
+        textarea2.value+=inStr;
         this.interrupt.setFlag(4);
     }
 
