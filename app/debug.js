@@ -1,14 +1,14 @@
 'use strict'
 {
     console.log("do")
-    //textarea2 = sio
-    const textarea2=document.getElementById("textarea2");
+    //terminal = sio
+    const terminal=document.getElementById("terminal");
 
-    textarea2.onkeydown = event =>{
+    terminal.onkeydown = event =>{
         cpu1.io.sio.input(event);
     };
 
-    textarea2.onkeyup = event =>{
+    terminal.onkeyup = event =>{
         cpu1.io.sio.ctrl(event);
     };
 
