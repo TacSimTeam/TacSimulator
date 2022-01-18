@@ -199,7 +199,7 @@ class Console{
       this.cpu.exec(this,b,this.addr);
       let stop = new Date();                   // 現在時刻
       if (stop.getTime()-start.getTime()>10){  // 10ms以上実行した
-        this.cpuid = setTimeout(()=>{this.run();},0);
+        this.cpuid = setTimeout(()=>{this.run(b);},0);
         return;                                // 他のイベント処理のため戻る
       }
     };
