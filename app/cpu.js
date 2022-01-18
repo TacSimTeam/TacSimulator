@@ -157,8 +157,8 @@ class cpu{
             }
         }
 
-        jmp(rd){
-            let d = this.EA();
+        jmp(rd,rx){
+            let d = this.EA(rx);
             let zflag = ((this.flag & flagZ) !=0);
             let cflag = ((this.flag & flagC) !=0);
             let sflag = ((this.flag & flagS) !=0);
@@ -237,9 +237,10 @@ class cpu{
             return v;
         }
 
-        call(con){
-            let ea = this.EA();
+        call(rx){
+            let ea = this.EA(rx);
             this.pushVal(this.pc);
+            console.log(this.pc);
             this.pc = ea;
         }
 
@@ -401,11 +402,11 @@ class cpu{
                 this.cal(rd,rx,(v1,v2) => {return v1 >>> v2});
                 break;
             case 0x14:
-                this.jmp(rd);
+                this.jmp(rd,rx);
                 break;
             case 0x15:
                 console.log('call');
-                this.call(con);
+                this.call(rx);
                 break;
             case 0x16:
                 if((this.flag & flagP | flagI)!== 0){
