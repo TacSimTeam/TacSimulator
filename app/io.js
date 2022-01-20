@@ -69,8 +69,8 @@ class io{
             case 0x16:
                 this.sd.writeSecL(data);
                 break;
-            case 0xf0:
-                this.mem.iplbanc(data);
+            case 0xa0:
+                this.mem.iplbank(data);
                 break;
         }
     }

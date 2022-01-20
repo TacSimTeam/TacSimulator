@@ -100,7 +100,7 @@ class cpu{
             let valMsb = val & 0x8000;
             let v1Msb = v1 & 0x8000;
             let v2Msb = v2 & 0x8000;
-            this.flag = this.flag & 0xfff0;
+            this.flag = this.flag & 0xf0;
 
             if(this.op5 == 3){ //add
                 if(v1Msb == v2Msb && valMsb != v1Msb){
@@ -485,10 +485,10 @@ class cpu{
         }
 
         setFlag(val){
-            this.flag = val;
+            this.flag = val & 0xff;
         }
 
         getFlag(){
-            return this.flag;
+            return this.flag & 0xff;
         }
 }
