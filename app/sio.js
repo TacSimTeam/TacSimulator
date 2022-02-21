@@ -30,8 +30,8 @@ class sio{
         if(e.key ==='Control'){
             this.ctrlf=1;
         }
-        if(e.key.length === 1){
-            const cp=e.key.codePointAt(0);
+        if(e.key.length === 1){     //１文字の時
+            const cp=e.key.codePointAt(0);  //文字コード取得
             if((0x20 <= cp)  && (cp <= 0x7e)){
                 this.data=cp;
                 this.stat=0xc0;
@@ -44,7 +44,7 @@ class sio{
                 }
             }
             this.interrupt.setFlag(5);
-        }else{
+        }else{ 
             switch(e.key){
                 case 'Escape':
                     this.data=0x1b;

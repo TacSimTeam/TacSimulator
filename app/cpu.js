@@ -15,11 +15,11 @@ class cpu{
             this.ir = 0;
             this.dr = 0;
             this.op = 0;  //命令の1byte目
-            this.op3= 0; //opの下位3bit
-            this.op5 = 0; //opの上位5bit
-            this.excp = false;
+            this.op3= 0; //opの下位3bit(アドレッシングモード)
+            this.op5 = 0; //opの上位5bit(命令)
+            this.excp = false;  //例外
             this.mem = mem;
-            this.shflag = false;
+            this.shflag = false;    //shift命令用
         }
 
             // CPUを初期化する関数
@@ -124,7 +124,9 @@ class cpu{
 
         ld(rd,rx){
             let d = this.fetchData(rx);
-            this.register.write(rd,d);
+            if(rd === 15){
+                this.flag = 0xff & d;             
+            }else this.register.write(rd,d);
         }
 
         st(rd,rx){
@@ -141,12 +143,12 @@ class cpu{
             console.log(word,ea);
         }
 
-        cal = (rd,rx,f) =>{
+        cal = (rd,rx,f) =>{         //計算ルーチン
             let v1 = this.register.read(rd);
             let v2 = this.fetchData(rx);
             let d = f(v1,v2);
             this.calFlag(d,v1,v2);
-            if(this.op5 != 5){
+            if(this.op5 != 5){      //cmp以外書き換え
                 this.register.write(rd,this.normInt(d));
             }
         }
@@ -387,19 +389,25 @@ class cpu{
                 break;
             case 0x11:
                 console.log('shll');
+                this.shflag = true;
                 this.cal(rd,rx,(v1,v2) => {return v1 << v2});
+                this.shflag = false;
                 break;
             case 0x12:
                 console.log('shra');
+                this.shflag = true;
                 this.cal(rd,rx,(v1,v2) => {
                         if((v1 & 0x8000)!=0){
                             v1 = v1 | ~0xffff;
                         }
                     return v1 >> v2});
+                this.shflag = false;
                 break;
             case 0x13:
                 console.log('shrl');
+                this.shflag = true;
                 this.cal(rd,rx,(v1,v2) => {return v1 >>> v2});
+                this.shflag = false;
                 break;
             case 0x14:
                 this.jmp(rd,rx);

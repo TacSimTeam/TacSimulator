@@ -68,7 +68,7 @@ class sd{
         }
     }
 
-    Secaddr(){
+    Secaddr(){  //上位・下位のセクタアドレス合成
         let secaddr=(this.secaddrH <<16 ) + this.secaddrL;
         console.log(secaddr);
         return secaddr;
@@ -76,9 +76,9 @@ class sd{
 
     readFile(md,sec){
         console.log(md,sec);
-        let buf = new Uint8Array(window.electron.readSector(sec));
+        let buf = new Uint8Array(window.electron.readSector(sec));  //window.electron.readSector(sec)はprelpad.jsに記述
         console.log(buf);
-        for(let i=0;i<512;i=i+2){
+        for(let i=0;i<512;i=i+2){   //8bit->16bit
             let val = (buf[i]<<8)+buf[i+1];
             this.mem.write(val,md);
             md=md+2;
@@ -88,12 +88,12 @@ class sd{
 
     writeFile(md,sec){
         let data= new Uint8Array(512);
-        for(let i=0;i<256;i=i+2){
+        for(let i=0;i<256;i=i+2){   //16bit->8bit
             data[i]=(this.mem.read(md) & 0xff00) >> 8;
             data[i+1] = this.mem.read(md) & 0x00ff;
             md=md+2;
         }
-        window.electron.writeSector(data,sec);
+        window.electron.writeSector(data,sec);      //window.electron.writeSector(data,sec)はprelpad.jsに記述
         console.log(data);
     }
 }

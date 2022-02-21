@@ -36,7 +36,7 @@ class io{
             case 0x16:
                 return this.sd.readSecL();
             case 0x1e:
-                return 1;
+                return 1;       //TaCモードとして動かす
         }
     }
 

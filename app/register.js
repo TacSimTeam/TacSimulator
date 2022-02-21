@@ -2,7 +2,7 @@ class register{
     constructor(){
         this.reg = new Uint16Array(13);
         this.sp = new Uint16Array(2); //sp[0]=ssp,sp[1]=usp;
-        this.privMode = 0;
+        this.privMode = 0;  //特権フラグ
     }
 
     reset(){

@@ -20,7 +20,7 @@ const fs = require("fs");     //ファイル読み書きメソッド用
 console.log(__dirname);
 const buf = Buffer.alloc(512);
 try {
-  var fd = fs.openSync(path.join(__dirname, "TacOS.dmg"), "r+");
+  var fd = fs.openSync(path.join(__dirname, "TacOS.dmg"), "r+");    //r+:読み書き可能
   console.log("ファイル:"+fd);
 } catch(e) {
   console.log(e.message);
