@@ -4,7 +4,8 @@
   "description": "TaC Simulator",
   "main": "app/main.js",
   "scripts": {
-    "build": "electron-builder --dir",
+    "build:mac": "electron-packager . TacSimulator --platform=darwin --arch=x64 --overwrite",
+    "build:win": "electron-packager . TacSimulator --platform=win32 --arch=x64 --overwrite",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,7 +31,8 @@
     ]
   },
   "devDependencies": {
-    "electron": "^16.0.7",
-    "electron-builder": "^22.10.4"
+    "electron": "^16.2.1",
+    "electron-builder": "^22.14.13",
+    "electron-packager": "^15.4.0"
   }
 }
