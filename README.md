@@ -5,7 +5,7 @@ JavaScript製の[TaC](https://github.com/tctsigemura/TacOS)シミュレータで
 ## インストール手順
 
 ### Node.jsインストール
-下のリンクからNode.jsをインストールします。
+下のリンクからNode.jsをインストールします。  
 https://nodejs.org/ja/
 
 #### Homebrewを使ったインストール(Macユーザーのみ)
@@ -30,7 +30,12 @@ $ npx electron .
 ```
 
 ### 実行ファイルの作成
-#### MacOS(x64)の場合
+初めて作成するときは、下のコマンドを実行してください。
+```
+$ npm ci
+```
+
+#### MacOSの場合
 ```
 $ npm run build:mac
 ```
