@@ -5,7 +5,7 @@ JavaScript製の[TaC](https://github.com/tctsigemura/TacOS)シミュレータで
 ## インストール手順
 
 ### Node.jsインストール
-下のリンクからNode.jsをインストールします。
+下のリンクからNode.jsをインストールします。  
 https://nodejs.org/ja/
 
 #### Homebrewを使ったインストール(Macユーザーのみ)
