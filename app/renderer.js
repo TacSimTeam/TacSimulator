@@ -1,7 +1,7 @@
 // ここも追加
 const cons = document.getElementById("console");
 const ctx = cons.getContext("2d");
-ctx.textAlign="center";
+ctx.textAlign = "center";
 
 const sound = document.getElementById("sound"); //https://soundeffect-lab.info/sound/button/
 const sound2 = document.getElementById("sound2");//https://soundeffect-lab.info/sound/button/
@@ -12,15 +12,15 @@ cons.onclick = (e) => {
   //message2.value=e.offsetY;
 
   //ボタン
-  for(let i=0; i<9; i++) {
-    if (con.button[i].hit(e.offsetX,e.offsetY)){
+  for (let i = 0; i < 9; i++) {
+    if (con.button[i].hit(e.offsetX, e.offsetY)) {
       document.getElementById("sound").play();
     }
   }
 
   //スイッチ
-  for(let i=0; i<10; i++) {
-    if (con.switches[i].hit(e.offsetX,e.offsetY,i)){
+  for (let i = 0; i < 10; i++) {
+    if (con.switches[i].hit(e.offsetX, e.offsetY, i)) {
       document.getElementById("sound2").play();
     }
 
@@ -29,7 +29,7 @@ cons.onclick = (e) => {
 
 // cosole.log の無効化
 window.console = {};
-window.console.log = function(i){return;};
+window.console.log = function (i) { return; };
 
 // オブジェクトを作成
 const mem = new memory();

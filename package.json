@@ -4,6 +4,7 @@
   "description": "TaC Simulator",
   "main": "app/main.js",
   "scripts": {
+    "start": "electron .",
     "build:mac": "electron-packager . TacSimulator --platform=darwin --arch=x64 --overwrite",
     "build:win": "electron-packager . TacSimulator --platform=win32 --arch=x64 --overwrite",
     "test": "echo \"Error: no test specified\" && exit 1"

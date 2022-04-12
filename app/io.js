@@ -1,20 +1,20 @@
-class io{
-    constructor(mem,interrupt){
-        this.sio=new sio(interrupt);
-        this.sd=new sd(mem,interrupt);
+class io {
+    constructor(mem, interrupt) {
+        this.sio = new sio(interrupt);
+        this.sd = new sd(mem, interrupt);
         this.timer = new timer(interrupt);
         this.mem = mem;
     }
 
-    reset(){
+    reset() {
         this.sio.reset();
         this.sd.reset();
         this.timer.reset();
     }
 
-    input(ea){
+    input(ea) {
         console.log(ea);
-        switch(ea){
+        switch (ea) {
             case 0x00:
                 return this.timer.readCnt(0);
             case 0x02:
@@ -40,19 +40,19 @@ class io{
         }
     }
 
-    output(data,ea){
-        switch(ea){
+    output(data, ea) {
+        switch (ea) {
             case 0x00:
-                this.timer.writeRegister(0,data);
+                this.timer.writeRegister(0, data);
                 break;
             case 0x02:
-                this.timer.writeCtrl(0,data);
+                this.timer.writeCtrl(0, data);
                 break;
             case 0x04:
-                this.timer.writeRegister(1,data);
+                this.timer.writeRegister(1, data);
                 break;
             case 0x06:
-                this.timer.writeCtrl(1,data);
+                this.timer.writeCtrl(1, data);
                 break;
             case 0x08:
                 this.sio.output(data);
